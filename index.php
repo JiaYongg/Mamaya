@@ -8,6 +8,6 @@ include("header.php");
      style="display:block; margin:auto;"/>
 
 <?php 
-// Include the Page Layout footer
+// Include the Page Layout footer ssss
 include("footer.php"); 
 ?>
