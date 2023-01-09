@@ -1,0 +1,30 @@
+body {
+    font-family : Arial;
+    font-size : 14px;
+}
+
+.page-title {
+    font-size:24px; 
+	font-weight:bold;
+}
+
+.cart-header {
+	/*background-color: #0040FF;*/
+	background-color: #017CA7;
+	color: white;
+}
+
+button[type="submit"]{
+	background-color: darkblue;
+	border: none;
+	color: white;
+    padding-right: 16px;
+    padding-left: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+	cursor: pointer;
+}
+
+.bg-custom{
+	background-color: darkgreen;
+}
