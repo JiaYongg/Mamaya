@@ -14,32 +14,32 @@ $pwd = $_POST["password"];
 
 // SQL query to get the Shopper ID and Shopper’s name of a particular record 
 // whereby the email address and passowrd in the Shopper table matches with the email address and password entered in the login page
-$qry = "SELECT ShopperID, Name FROM Shopper WHERE Email = ? AND Password = ?";
+$qry = "SELECT ShopperID, Name, Password FROM Shopper WHERE Email = ?";
 
 // bind parameters to prevent sql injection 
 $stmt = $conn->prepare($qry);
-$stmt -> bind_param("ss", $email, $pwd);
+$stmt -> bind_param("s", $email);
 
 // execute the query
 $stmt ->execute();
 
-// store the result back into $stmt
-$stmt -> store_result();
-
-// bind iterative variables($id, $name) to ShopperID and Name from Shopper table
-$stmt -> bind_result($id, $name);
-$results = $stmt->fetch(); // returns true if thr is a result and false if no result
+// store the result back into $result
+$result = $stmt->get_result();
 
 $stmt->close();
-// loop through each column in the record when found
-if ($results == true)
+
+if ($result->num_rows > 0)
 {
-	while ($results)
+	$row = $result->fetch_array();
+	$hashed_pwd = $row["Password"];
+
+	if (password_verify($pwd, $hashed_pwd) == true)
 	{
+		$checkLogin = true;
+
 		// Save user's info in session variables
-		$_SESSION["ShopperName"] = $name;
-		$_SESSION["ShopperID"] = $id;
-	
+		$_SESSION["ShopperName"] = $row["Name"];
+		$_SESSION["ShopperID"] = $row["ShopperID"];
 
 		// To Do 2 (Practical 4): Get active shopping cart
 		$qry = "SELECT sc.ShopCartID, COUNT(sci.ProductID) AS NumItems FROM ShopCart sc LEFT JOIN ShopCartItem sci ON sc.ShopCartID=sci.ShopCartID WHERE sc.ShopperID=? AND sc.OrderPlaced=0";
@@ -68,11 +68,12 @@ if ($results == true)
 		header("Location: index.php");
 		exit;
 	}
+	else
+	{
+		echo "<h3 style='color:red'>Invalid Login Credentials</h3>";
+	}
 }
-else
-{
-	echo "<h3 style='color:red'>Invalid Login Credentials</h3>";
-}
+
 
 
 // To Do 1 (Practical 2): Validate login credentials with database
